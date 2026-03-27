@@ -1,0 +1,33 @@
+{
+    "name": "architecture-mvp",
+    "private": true,
+    "workspaces": [
+        "packages/*",
+        "apps/*"
+    ],
+    "scripts": {
+        "build": "npm run build -w @mvp/shared && npm run build -w @mvp/backend && npm run build -w @mvp/frontend",
+        "start": "npm run dev",
+        "dev": "npm run build -w @mvp/shared && concurrently -n shared,be,fe -c blue,green,yellow \"npm run dev -w @mvp/shared\" \"npm run dev -w @mvp/backend\" \"npm run dev -w @mvp/frontend\"",
+        "dev:backend": "npm run build -w @mvp/shared && concurrently -n shared,be -c blue,green \"npm run dev -w @mvp/shared\" \"npm run dev -w @mvp/backend\"",
+        "dev:frontend": "npm run build -w @mvp/shared && concurrently -n shared,fe -c blue,yellow \"npm run dev -w @mvp/shared\" \"npm run dev -w @mvp/frontend\"",
+        "build:backend": "npm run build -w @mvp/shared && npm run build -w @mvp/backend",
+        "start:backend": "npm run start -w @mvp/backend",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "format": "prettier --write .",
+        "format:check": "prettier --check ."
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.21.0",
+        "concurrently": "^9.1.2",
+        "eslint": "^9.21.0",
+        "eslint-config-prettier": "^10.0.1",
+        "prettier": "^3.5.3",
+        "typescript": "^5.7.3",
+        "typescript-eslint": "^8.26.0"
+    },
+    "engines": {
+        "node": ">=20"
+    }
+}

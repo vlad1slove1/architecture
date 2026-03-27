@@ -1,0 +1,19 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+
+const workspaceDir: string = path.dirname(fileURLToPath(import.meta.url));
+
+export default defineConfig({
+    plugins: [react()],
+    resolve: {
+        alias: {
+            "@mvp/shared": path.resolve(workspaceDir, "../../packages/shared/src/index.ts"),
+        },
+    },
+    server: {
+        port: 5173,
+    },
+});
