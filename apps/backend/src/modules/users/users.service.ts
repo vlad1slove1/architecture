@@ -1,9 +1,4 @@
-import type {
-    CreateUserRequestBody,
-    CreateUserResponseBody,
-    ListUsersResponseBody,
-    UserDto,
-} from "@mvp/shared";
+import type { ApiResponse, CreateUserRequestBody, UserDto } from "@mvp/shared";
 import { Injectable } from "@nestjs/common";
 
 import type { UserEntity } from "./types/user.types";
@@ -14,15 +9,16 @@ import { UsersRepository } from "./users.repository";
 export class UsersService {
     public constructor(private readonly usersRepository: UsersRepository) {}
 
-    public listUsers(): ListUsersResponseBody {
+    public listUsers(): ApiResponse<readonly UserDto[]> {
         const users: readonly UserEntity[] = this.usersRepository.findAll();
         return {
-            users: users.map((u: UserEntity): UserDto => UserMapper.toDto(u)),
+            success: true,
+            data: users.map((u: UserEntity): UserDto => UserMapper.toDto(u)),
         };
     }
 
-    public createUser(input: CreateUserRequestBody): CreateUserResponseBody {
+    public createUser(input: CreateUserRequestBody): ApiResponse<UserDto> {
         const entity: UserEntity = this.usersRepository.create(UserMapper.toEntity(input));
-        return { user: UserMapper.toDto(entity) };
+        return { success: true, data: UserMapper.toDto(entity) };
     }
 }

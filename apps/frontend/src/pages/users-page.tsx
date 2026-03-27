@@ -1,4 +1,4 @@
-import type { ListUsersResponseBody } from "@mvp/shared";
+import { isApiResponseSuccess, type ApiResponse, type UserDto } from "@mvp/shared";
 import type { FormEvent, ReactElement } from "react";
 import { useCallback, useEffect, useState } from "react";
 
@@ -6,12 +6,16 @@ import { createUsersApi } from "../api/index.js";
 import { getApiBaseUrl } from "../config/api-base-url.js";
 import { formatThrownError } from "../utils/format-thrown-error.js";
 
-function buildUsersListText(data: ListUsersResponseBody): string {
-    if (data.users.length === 0) {
+function buildUsersListText(data: ApiResponse<readonly UserDto[]>): string {
+    if (!isApiResponseSuccess(data)) {
+        return `Ошибка: ${data.error} (${data.code})`;
+    }
+
+    if (data.data.length === 0) {
         return "Пока нет пользователей.";
     }
 
-    return data.users
+    return data.data
         .map((u) => `• ${u.displayName} <${u.email}> — id ${u.id.slice(0, 8)}…`)
         .join("\n");
 }
