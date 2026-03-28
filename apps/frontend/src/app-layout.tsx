@@ -13,6 +13,7 @@ export function AppLayout(): ReactElement {
             <nav className="app-nav" aria-label="Основная навигация">
                 <Link to="/">Главная</Link>
                 <Link to="/users">Пользователи</Link>
+                <Link to="/notes">Заметки</Link>
             </nav>
 
             <Outlet />
