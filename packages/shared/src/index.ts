@@ -4,7 +4,9 @@ export type {
     ApiFailureBody,
     ApiResponse,
     ApiSuccessBody,
+    CreateNoteRequestBody,
     CreateUserRequestBody,
     HealthCheckResponse,
+    NoteDto,
     UserDto,
 } from "./contracts/index.js";
