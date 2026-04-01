@@ -1,11 +1,22 @@
-import type { ApiResponse, CreateUserRequestBody, UserDto } from "@mvp/shared";
+import type {
+    ApiResponse,
+    CreateUserRequestBody,
+    UpdateUserRequestBody,
+    UserDto,
+} from "@mvp/shared";
 import { API_ROUTES } from "@mvp/shared";
 
-import { getJson, postJson } from "./fetch-json.js";
+import { deleteJson, getJson, patchJson, postJson } from "./fetch-json.js";
 
 type UsersApi = {
     readonly listUsers: () => Promise<ApiResponse<readonly UserDto[]>>;
     readonly createUser: (body: CreateUserRequestBody) => Promise<ApiResponse<UserDto>>;
+    readonly getUserById: (userId: string) => Promise<ApiResponse<UserDto>>;
+    readonly updateUser: (
+        userId: string,
+        body: UpdateUserRequestBody,
+    ) => Promise<ApiResponse<UserDto>>;
+    readonly deleteUser: (userId: string) => Promise<ApiResponse<UserDto>>;
 };
 
 export function createUsersApi(params: { readonly baseUrl: string }): UsersApi {
@@ -22,6 +33,25 @@ export function createUsersApi(params: { readonly baseUrl: string }): UsersApi {
                 API_ROUTES.users,
                 body,
             );
+        },
+
+        async getUserById(userId: string): Promise<ApiResponse<UserDto>> {
+            return getJson<ApiResponse<UserDto>>(baseUrl, API_ROUTES.userById(userId));
+        },
+
+        async updateUser(
+            userId: string,
+            body: UpdateUserRequestBody,
+        ): Promise<ApiResponse<UserDto>> {
+            return patchJson<UpdateUserRequestBody, ApiResponse<UserDto>>(
+                baseUrl,
+                API_ROUTES.userById(userId),
+                body,
+            );
+        },
+
+        async deleteUser(userId: string): Promise<ApiResponse<UserDto>> {
+            return deleteJson<ApiResponse<UserDto>>(baseUrl, API_ROUTES.userById(userId));
         },
     };
 }

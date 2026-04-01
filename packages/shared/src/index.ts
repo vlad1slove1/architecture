@@ -8,5 +8,6 @@ export type {
     CreateUserRequestBody,
     HealthCheckResponse,
     NoteDto,
+    UpdateUserRequestBody,
     UserDto,
 } from "./contracts/index.js";

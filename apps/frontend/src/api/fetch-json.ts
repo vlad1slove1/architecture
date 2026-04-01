@@ -53,3 +53,23 @@ export async function postJson<TBody, TResponse>(
     });
     return parseJsonResponse<TResponse>(response);
 }
+
+export async function patchJson<TBody, TResponse>(
+    baseUrl: string,
+    path: string,
+    body: TBody,
+): Promise<TResponse> {
+    const response: Response = await fetch(`${baseUrl}${path}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+    });
+    return parseJsonResponse<TResponse>(response);
+}
+
+export async function deleteJson<TResponse>(baseUrl: string, path: string): Promise<TResponse> {
+    const response: Response = await fetch(`${baseUrl}${path}`, {
+        method: "DELETE",
+    });
+    return parseJsonResponse<TResponse>(response);
+}

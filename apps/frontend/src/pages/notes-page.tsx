@@ -1,7 +1,6 @@
 import { isApiResponseSuccess, type ApiResponse, type NoteDto } from "@mvp/shared";
-import type { FormEvent, ReactElement } from "react";
+import type { ReactElement, SubmitEvent } from "react";
 import { useCallback, useEffect, useState } from "react";
-
 import { createNotesApi } from "../api/index.js";
 import { getApiBaseUrl } from "../config/api-base-url.js";
 import { formatThrownError } from "../utils/format-thrown-error.js";
@@ -15,9 +14,7 @@ function buildNotesListText(data: ApiResponse<readonly NoteDto[]>): string {
         return "Пока нет заметок.";
     }
 
-    return data.data
-        .map((n) => `• ${n.title} — ${n.content}`)
-        .join("\n");
+    return data.data.map((n) => `• ${n.title} — ${n.content}`).join("\n");
 }
 
 const notesApi = createNotesApi({ baseUrl: getApiBaseUrl() });
@@ -41,7 +38,7 @@ export function NotesPage(): ReactElement {
         void refreshNotes();
     }, [refreshNotes]);
 
-    async function handleCreateNoteSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
+    async function handleCreateNoteSubmit(event: SubmitEvent<HTMLFormElement>): Promise<void> {
         event.preventDefault();
         const form = event.currentTarget;
         const titleInput = form.elements.namedItem("title") as HTMLInputElement;
