@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+
 import { AppLayout } from "./app-layout.js";
 import { HomePage } from "./pages/home-page.js";
 import { NotesPage } from "./pages/notes-page.js";
