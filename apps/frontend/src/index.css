@@ -10,7 +10,7 @@ body {
 }
 
 #root {
-    max-width: 40rem;
+    max-width: 52rem;
     margin: 2rem auto;
     padding: 0 1rem;
 }
@@ -43,6 +43,12 @@ section {
     border-radius: 0.5rem;
 }
 
+.section-hint {
+    margin: 0 0 0.5rem;
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
 pre {
     white-space: pre-wrap;
     margin: 0;
@@ -66,4 +72,87 @@ button {
     margin-top: 0.75rem;
     padding: 0.4rem 0.75rem;
     cursor: pointer;
+}
+
+button.button-inline {
+    margin-top: 0;
+    margin-right: 0.35rem;
+}
+
+button.button-danger {
+    color: #b91c1c;
+}
+
+.users-table-wrap {
+    overflow-x: auto;
+    margin-top: 0.5rem;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.users-table th,
+.users-table td {
+    padding: 0.35rem 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+}
+
+.users-table th {
+    font-weight: 600;
+    color: #475569;
+}
+
+.users-table td.actions {
+    white-space: nowrap;
+}
+
+.users-table code {
+    font-size: 0.8em;
+    word-break: break-all;
+}
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(15, 23, 42, 0.45);
+}
+
+.modal-panel {
+    width: 100%;
+    max-width: 24rem;
+    max-height: min(90vh, 100%);
+    overflow: auto;
+    margin: 0;
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+}
+
+.modal-panel h2 {
+    margin-top: 0;
+    font-size: 1.1rem;
+}
+
+.modal-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 0.75rem;
+}
+
+.modal-actions button {
+    margin-top: 0;
 }

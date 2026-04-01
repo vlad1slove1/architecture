@@ -1,4 +1,4 @@
-import type { CreateUserRequestBody, UserDto } from "@mvp/shared";
+import type { CreateUserRequestBody, UpdateUserRequestBody, UserDto } from "@mvp/shared";
 import type { UserEntity } from "./types/user.types";
 
 export class UserMapper {
@@ -16,5 +16,21 @@ export class UserMapper {
             email: input.email.trim(),
             displayName: input.displayName.trim(),
         };
+    }
+
+    public static normalizeUpdate(input: UpdateUserRequestBody): {
+        readonly email?: string;
+        readonly displayName?: string;
+    } {
+        const patch: { email?: string; displayName?: string } = {};
+        if (input.email !== undefined) {
+            patch.email = input.email.trim();
+        }
+
+        if (input.displayName !== undefined) {
+            patch.displayName = input.displayName.trim();
+        }
+
+        return patch;
     }
 }
