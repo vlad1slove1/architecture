@@ -16,7 +16,16 @@
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "format": "prettier --write .",
-        "format:check": "prettier --check ."
+        "format:check": "prettier --check .",
+        "db:up": "docker compose up -d db",
+        "db:down": "docker compose down",
+        "db:drop": "bash scripts/db/db-admin.sh drop",
+        "db:create": "bash scripts/db/db-admin.sh create",
+        "db:migrate": "npm run migration:run -w @mvp/backend",
+        "migration:run": "npm run migration:run -w @mvp/backend",
+        "migration:revert": "npm run migration:revert -w @mvp/backend",
+        "db:seed": "npm run seed:run -w @mvp/backend",
+        "db:reset": "npm run db:drop && npm run db:create && npm run db:migrate"
     },
     "devDependencies": {
         "@eslint/js": "^9.21.0",

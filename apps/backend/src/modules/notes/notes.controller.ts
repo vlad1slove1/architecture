@@ -1,4 +1,4 @@
-import type { ApiResponse, NoteDto } from "@mvp/shared";
+import { isApiResponseSuccess, type ApiResponse, type NoteDto } from "@mvp/shared";
 import { Body, Controller, Get, HttpCode, Post } from "@nestjs/common";
 import { ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import {
@@ -8,8 +8,10 @@ import {
     ApiSuccessNotesListOpenApiModel,
     buildEnvelopeOneOfSchema,
 } from "../../core/openapi/index.js";
+import type { Note } from "./domain/note.js";
+import { NoteMapper } from "./domain/note.mapper.js";
 import { CreateNoteDto } from "./dto/create-note.dto";
-import { NotesService } from "./notes.service";
+import { NotesService } from "./notes.service.js";
 
 @ApiTags("Notes")
 @Controller("notes")
@@ -27,8 +29,16 @@ export class NotesController {
         schema: buildEnvelopeOneOfSchema(ApiSuccessNotesListOpenApiModel, ApiFailureOpenApiModel),
     })
     @ApiEnvelopeErrorResponses()
-    public listNotes(): ApiResponse<readonly NoteDto[]> {
-        return this.notesService.listNotes();
+    public async listNotes(): Promise<ApiResponse<readonly NoteDto[]>> {
+        const result: ApiResponse<readonly Note[]> = await this.notesService.listNotes();
+        if (!isApiResponseSuccess(result)) {
+            return result;
+        }
+
+        return {
+            success: true,
+            data: result.data.map((n: Note): NoteDto => NoteMapper.toDto(n)),
+        };
     }
 
     @Post()
@@ -44,7 +54,17 @@ export class NotesController {
         schema: buildEnvelopeOneOfSchema(ApiSuccessNoteOpenApiModel, ApiFailureOpenApiModel),
     })
     @ApiEnvelopeErrorResponses()
-    public createNote(@Body() dto: CreateNoteDto): ApiResponse<NoteDto> {
-        return this.notesService.createNote(dto);
+    public async createNote(@Body() dto: CreateNoteDto): Promise<ApiResponse<NoteDto>> {
+        const result: ApiResponse<Note> = await this.notesService.createNote({
+            title: dto.title,
+            content: dto.content,
+            userId: dto.userId,
+        });
+
+        if (!isApiResponseSuccess(result)) {
+            return result;
+        }
+
+        return { success: true, data: NoteMapper.toDto(result.data) };
     }
 }

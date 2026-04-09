@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { NoteOpenApiModel } from "../notes/note.openapi-model.js";
 
 /** Один пользователь (совпадает с `UserDto` из `@mvp/shared`). */
 export class UserOpenApiModel {
@@ -13,6 +14,9 @@ export class UserOpenApiModel {
 
     @ApiProperty({ example: "2026-03-30T12:00:00.000Z" })
     public createdAt!: string;
+
+    @ApiProperty({ type: () => NoteOpenApiModel, isArray: true })
+    public notes!: NoteOpenApiModel[];
 }
 
 /** Успех: `GET /api/users`. */
