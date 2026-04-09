@@ -1,4 +1,4 @@
-import type { ApiResponse, UserDto } from "@mvp/shared";
+import { isApiResponseSuccess, type ApiResponse, type UserDto } from "@mvp/shared";
 import {
     Body,
     Controller,
@@ -25,9 +25,11 @@ import {
     ApiSuccessUsersListOpenApiModel,
     buildEnvelopeOneOfSchema,
 } from "../../core/openapi/index.js";
+import { UserMapper } from "./domain/user.mapper.js";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { UsersService } from "./users.service";
+import type { UserWithNotes } from "./user-with-notes.js";
+import { UsersService } from "./users.service.js";
 
 @ApiTags("Users")
 @Controller("users")
@@ -44,8 +46,18 @@ export class UsersController {
         schema: buildEnvelopeOneOfSchema(ApiSuccessUsersListOpenApiModel, ApiFailureOpenApiModel),
     })
     @ApiEnvelopeErrorResponses()
-    public listUsers(): ApiResponse<readonly UserDto[]> {
-        return this.usersService.listUsers();
+    public async listUsers(): Promise<ApiResponse<readonly UserDto[]>> {
+        const result: ApiResponse<readonly UserWithNotes[]> = await this.usersService.listUsers();
+        if (!isApiResponseSuccess(result)) {
+            return result;
+        }
+
+        return {
+            success: true,
+            data: result.data.map(
+                (row: UserWithNotes): UserDto => UserMapper.toDto(row.user, row.notes),
+            ),
+        };
     }
 
     @Post()
@@ -60,11 +72,19 @@ export class UsersController {
         schema: buildEnvelopeOneOfSchema(ApiSuccessUserOpenApiModel, ApiFailureOpenApiModel),
     })
     @ApiEnvelopeErrorResponses()
-    public createUser(@Body() dto: CreateUserDto): ApiResponse<UserDto> {
-        return this.usersService.createUser({
+    public async createUser(@Body() dto: CreateUserDto): Promise<ApiResponse<UserDto>> {
+        const result: ApiResponse<UserWithNotes> = await this.usersService.createUser({
             email: dto.email,
             displayName: dto.displayName,
         });
+        if (!isApiResponseSuccess(result)) {
+            return result;
+        }
+
+        return {
+            success: true,
+            data: UserMapper.toDto(result.data.user, result.data.notes),
+        };
     }
 
     @Get(":id")
@@ -78,8 +98,18 @@ export class UsersController {
         schema: buildEnvelopeOneOfSchema(ApiSuccessUserOpenApiModel, ApiFailureOpenApiModel),
     })
     @ApiEnvelopeErrorResponses()
-    public getUserById(@Param("id", ParseUUIDPipe) id: string): ApiResponse<UserDto> {
-        return this.usersService.getUserById(id);
+    public async getUserById(
+        @Param("id", ParseUUIDPipe) id: string,
+    ): Promise<ApiResponse<UserDto>> {
+        const result: ApiResponse<UserWithNotes> = await this.usersService.getUserById(id);
+        if (!isApiResponseSuccess(result)) {
+            return result;
+        }
+
+        return {
+            success: true,
+            data: UserMapper.toDto(result.data.user, result.data.notes),
+        };
     }
 
     @Patch(":id")
@@ -95,14 +125,22 @@ export class UsersController {
         schema: buildEnvelopeOneOfSchema(ApiSuccessUserOpenApiModel, ApiFailureOpenApiModel),
     })
     @ApiEnvelopeErrorResponses()
-    public updateUser(
+    public async updateUser(
         @Param("id", ParseUUIDPipe) id: string,
         @Body() dto: UpdateUserDto,
-    ): ApiResponse<UserDto> {
-        return this.usersService.updateUser(id, {
+    ): Promise<ApiResponse<UserDto>> {
+        const result: ApiResponse<UserWithNotes> = await this.usersService.updateUser(id, {
             email: dto.email,
             displayName: dto.displayName,
         });
+        if (!isApiResponseSuccess(result)) {
+            return result;
+        }
+
+        return {
+            success: true,
+            data: UserMapper.toDto(result.data.user, result.data.notes),
+        };
     }
 
     @Delete(":id")
@@ -118,7 +156,15 @@ export class UsersController {
         schema: buildEnvelopeOneOfSchema(ApiSuccessUserOpenApiModel, ApiFailureOpenApiModel),
     })
     @ApiEnvelopeErrorResponses()
-    public deleteUser(@Param("id", ParseUUIDPipe) id: string): ApiResponse<UserDto> {
-        return this.usersService.deleteUser(id);
+    public async deleteUser(@Param("id", ParseUUIDPipe) id: string): Promise<ApiResponse<UserDto>> {
+        const result: ApiResponse<UserWithNotes> = await this.usersService.deleteUser(id);
+        if (!isApiResponseSuccess(result)) {
+            return result;
+        }
+
+        return {
+            success: true,
+            data: UserMapper.toDto(result.data.user, result.data.notes),
+        };
     }
 }

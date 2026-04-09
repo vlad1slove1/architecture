@@ -1,7 +1,15 @@
 import { Module } from "@nestjs/common";
-import { NotesController } from "./notes.controller";
-import { NotesRepository } from "./notes.repository";
-import { NotesService } from "./notes.service";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { UserNotesModule } from "../user-notes/user-notes.module.js";
+import { NoteOrmEntity } from "./infrastructure/persistence/note.orm-entity.js";
+import { NotesTypeormRepository } from "./infrastructure/persistence/notes.typeorm-repository.js";
+import { NotesController } from "./notes.controller.js";
+import { NotesService } from "./notes.service.js";
 
-@Module({ controllers: [NotesController], providers: [NotesService, NotesRepository] })
+@Module({
+    imports: [TypeOrmModule.forFeature([NoteOrmEntity]), UserNotesModule],
+    controllers: [NotesController],
+    providers: [NotesService, NotesTypeormRepository],
+    exports: [NotesService],
+})
 export class NotesModule {}

@@ -1,8 +1,10 @@
 import "reflect-metadata";
+import "./load-env.js";
 
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { parseAppEnv } from "./core/config/parse-app-env.js";
 import { OPENAPI_EXTRA_MODELS } from "./core/openapi/index.js";
 import { AppModule } from "./modules/app.module.js";
 
@@ -52,9 +54,8 @@ async function bootstrap(): Promise<void> {
         explorer: true,
     });
 
-    const portRaw: string | undefined = process.env.PORT;
-    const port: number = portRaw !== undefined ? Number(portRaw) : 3000;
-    await app.listen(port);
+    const { PORT } = parseAppEnv(process.env);
+    await app.listen(PORT);
 }
 
 void bootstrap();

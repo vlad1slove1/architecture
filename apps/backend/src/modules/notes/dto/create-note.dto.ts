@@ -1,4 +1,4 @@
-import { IsString, MinLength } from "class-validator";
+import { IsOptional, IsString, IsUUID, MinLength } from "class-validator";
 
 export class CreateNoteDto {
     @IsString()
@@ -7,4 +7,8 @@ export class CreateNoteDto {
 
     @IsString()
     public content!: string;
+
+    @IsOptional()
+    @IsUUID("4")
+    public userId?: string;
 }

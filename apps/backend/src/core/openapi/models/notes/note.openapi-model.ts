@@ -13,6 +13,9 @@ export class NoteOpenApiModel {
 
     @ApiProperty({ example: "2026-03-30T12:00:00.000Z" })
     public createdAt!: string;
+
+    @ApiProperty({ format: "uuid", nullable: true, description: "Владелец заметки" })
+    public userId!: string | null;
 }
 
 /** Успех: `GET /api/notes` — список заметок. */

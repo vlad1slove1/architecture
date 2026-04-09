@@ -5,7 +5,12 @@
         "build": "nest build",
         "dev": "nest start --watch",
         "start": "node dist/src/main.js",
-        "start:prod": "node dist/src/main.js"
+        "start:prod": "node dist/src/main.js",
+        "migration:generate": "node scripts/run-migration-generate.mjs",
+        "migration:create": "node scripts/run-migration-create.mjs",
+        "migration:run": "nest build && typeorm migration:run -d dist/src/core/database/data-source.js",
+        "migration:revert": "nest build && typeorm migration:revert -d dist/src/core/database/data-source.js",
+        "seed:run": "nest build && node dist/src/core/database/seeds/run-seeds.js"
     },
     "dependencies": {
         "@mvp/shared": "0.0.1",
@@ -13,10 +18,15 @@
         "@nestjs/core": "^10.4.15",
         "@nestjs/platform-express": "^10.4.15",
         "@nestjs/swagger": "^7.4.2",
+        "@nestjs/typeorm": "^10.0.2",
         "class-transformer": "^0.5.1",
         "class-validator": "^0.14.1",
+        "dotenv": "^16.4.7",
+        "pg": "^8.13.1",
         "reflect-metadata": "^0.2.2",
-        "rxjs": "^7.8.1"
+        "rxjs": "^7.8.1",
+        "typeorm": "^0.3.20",
+        "zod": "^3.24.1"
     },
     "devDependencies": {
         "@nestjs/cli": "^10.4.9",

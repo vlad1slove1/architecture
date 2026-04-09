@@ -1,17 +1,31 @@
-import type { ApiResponse, CreateNoteRequestBody, NoteDto } from "@mvp/shared";
+import type { ApiResponse, CreateNoteRequestBody } from "@mvp/shared";
 import { Injectable } from "@nestjs/common";
-import { NoteMapper } from "./note.mapper";
-import { NotesRepository } from "./notes.repository";
+import type { Note } from "./domain/note.js";
+import { NotesTypeormRepository } from "./infrastructure/persistence/notes.typeorm-repository.js";
 
 @Injectable()
 export class NotesService {
-    public constructor(private readonly repo: NotesRepository) {}
+    public constructor(private readonly notesRepository: NotesTypeormRepository) {}
 
-    public listNotes(): ApiResponse<readonly NoteDto[]> {
-        return { success: true, data: this.repo.findAll().map(NoteMapper.toDto) };
+    public async listNotes(): Promise<ApiResponse<readonly Note[]>> {
+        const notes: readonly Note[] = await this.notesRepository.findAll();
+        return { success: true, data: notes };
     }
 
-    public createNote(input: CreateNoteRequestBody): ApiResponse<NoteDto> {
-        return { success: true, data: NoteMapper.toDto(this.repo.create(NoteMapper.toEntity(input))) };
+    public async findAllByUserId(userId: string): Promise<readonly Note[]> {
+        return this.notesRepository.findByUserId(userId);
+    }
+
+    public async createNote(input: CreateNoteRequestBody): Promise<ApiResponse<Note>> {
+        const ownerUserId: string | undefined =
+            input.userId === undefined ? undefined : input.userId.trim();
+
+        const note: Note = await this.notesRepository.create({
+            title: input.title.trim(),
+            content: input.content.trim(),
+            ...(ownerUserId !== undefined && ownerUserId.length > 0 ? { userId: ownerUserId } : {}),
+        });
+
+        return { success: true, data: note };
     }
 }
