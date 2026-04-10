@@ -28,7 +28,7 @@ import {
 import { UserMapper } from "./domain/user.mapper.js";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import type { UserWithNotes } from "./user-with-notes.js";
+import type { UserWithNotes } from "./types/user-with-notes.js";
 import { UsersService } from "./users.service.js";
 
 @ApiTags("Users")
