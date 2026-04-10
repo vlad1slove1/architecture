@@ -22,6 +22,15 @@ export class UsersTypeormRepository {
         return row === null ? null : UsersTypeormRepository.mapRowToUser(row);
     }
 
+    public async findByIdWithNotes(id: string, alias: string = "u"): Promise<UserOrmEntity | null> {
+        return this.repository
+            .createQueryBuilder(alias)
+            .leftJoinAndSelect(`${alias}.notes`, "note")
+            .where(`${alias}.id = :id`, { id })
+            .orderBy("note.createdAt", "DESC")
+            .getOne();
+    }
+
     public async create(input: {
         readonly email: string;
         readonly displayName: string;

@@ -2,6 +2,7 @@ import type { ApiResponse, CreateUserRequestBody, UpdateUserRequestBody } from "
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { NotesService } from "../notes/notes.service.js";
 import type { User } from "./domain/user.js";
+import { UserMapper } from "./domain/user.mapper.js";
 import { UsersTypeormRepository } from "./infrastructure/persistence/users.typeorm-repository.js";
 import type { UserWithNotes } from "./user-with-notes.js";
 
@@ -29,12 +30,12 @@ export class UsersService {
     }
 
     public async getUserById(id: string): Promise<ApiResponse<UserWithNotes>> {
-        const user: User | null = await this.usersRepository.findById(id);
-        if (user === null) {
+        const row = await this.usersRepository.findByIdWithNotes(id);
+        if (row === null) {
             throw new NotFoundException(`Пользователь с id ${id} не найден`);
         }
 
-        return { success: true, data: await this.loadUserWithNotes(user) };
+        return { success: true, data: UserMapper.userWithNotesFromPersistence(row) };
     }
 
     public async updateUser(

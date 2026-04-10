@@ -1,15 +1,21 @@
 import type { NoteDto } from "@mvp/shared";
 import { Note } from "./note.js";
 
+export type NotePersistenceFields = {
+    readonly id: string;
+    readonly title: string;
+    readonly content: string;
+    readonly createdAt: Date;
+    readonly userId?: string | null;
+};
+
 export class NoteMapper {
-    public static fromPersistence(fields: {
-        readonly id: string;
-        readonly title: string;
-        readonly content: string;
-        readonly createdAt: Date;
-        readonly userId?: string | null;
-    }): Note {
+    public static fromPersistence(fields: NotePersistenceFields): Note {
         return Note.rehydrate(fields);
+    }
+
+    public static fromPersistenceMany(rows: readonly NotePersistenceFields[]): readonly Note[] {
+        return rows.map((row: NotePersistenceFields): Note => NoteMapper.fromPersistence(row));
     }
 
     public static toPersistence(note: Note): {
