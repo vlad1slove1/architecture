@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { NoteOrmEntity } from "../../../notes/infrastructure/persistence/note.orm-entity.js";
 
 @Entity({ name: "users" })
 export class UserOrmEntity {
@@ -13,4 +14,7 @@ export class UserOrmEntity {
 
     @CreateDateColumn({ name: "created_at", type: "timestamptz" })
     public createdAt!: Date;
+
+    @OneToMany(() => NoteOrmEntity, (note: NoteOrmEntity) => note.user)
+    public notes!: NoteOrmEntity[];
 }

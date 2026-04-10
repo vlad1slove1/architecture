@@ -2,7 +2,6 @@ import * as dotenv from "dotenv";
 import path from "node:path";
 import { DataSource } from "typeorm";
 import { NoteOrmEntity } from "../../modules/notes/infrastructure/persistence/note.orm-entity.js";
-import { UserNoteOrmEntity } from "../../modules/user-notes/infrastructure/persistence/user-note.orm-entity.js";
 import { UserOrmEntity } from "../../modules/users/infrastructure/persistence/user.orm-entity.js";
 import { parseAppEnv } from "../config/parse-app-env.js";
 
@@ -15,7 +14,7 @@ const migrationsGlob: string = path.join(__dirname, "migrations", "*.{js,ts}");
 export const AppDataSource = new DataSource({
     type: "postgres",
     url: env.databaseUrl,
-    entities: [UserOrmEntity, NoteOrmEntity, UserNoteOrmEntity],
+    entities: [UserOrmEntity, NoteOrmEntity],
     migrations: [migrationsGlob],
     synchronize: false,
     logging: env.NODE_ENV === "development",
