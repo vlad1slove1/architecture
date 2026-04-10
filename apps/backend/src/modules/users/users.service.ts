@@ -4,7 +4,7 @@ import { NotesService } from "../notes/notes.service.js";
 import type { User } from "./domain/user.js";
 import { UserMapper } from "./domain/user.mapper.js";
 import { UsersTypeormRepository } from "./infrastructure/persistence/users.typeorm-repository.js";
-import type { UserWithNotes } from "./user-with-notes.js";
+import type { UserWithNotes } from "./types/user-with-notes.js";
 
 @Injectable()
 export class UsersService {

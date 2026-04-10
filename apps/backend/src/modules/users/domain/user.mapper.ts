@@ -1,7 +1,7 @@
 import type { UserDto } from "@mvp/shared";
 import type { Note } from "../../notes/domain/note.js";
 import { NoteMapper, type NotePersistenceFields } from "../../notes/domain/note.mapper.js";
-import type { UserWithNotes } from "../user-with-notes.js";
+import type { UserWithNotes } from "../types/user-with-notes.js";
 import { User } from "./user.js";
 
 export class UserMapper {
