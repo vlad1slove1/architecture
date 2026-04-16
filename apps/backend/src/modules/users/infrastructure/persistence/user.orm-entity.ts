@@ -1,3 +1,4 @@
+import { UserRole } from "@mvp/shared";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { NoteOrmEntity } from "../../../notes/infrastructure/persistence/note.orm-entity.js";
 
@@ -11,6 +12,12 @@ export class UserOrmEntity {
 
     @Column({ name: "display_name", type: "varchar" })
     public displayName!: string;
+
+    @Column({ name: "password_hash", type: "varchar", nullable: true })
+    public passwordHash!: string | null;
+
+    @Column({ type: "varchar", default: UserRole.USER })
+    public role!: UserRole;
 
     @CreateDateColumn({ name: "created_at", type: "timestamptz" })
     public createdAt!: Date;

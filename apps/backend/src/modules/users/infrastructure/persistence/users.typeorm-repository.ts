@@ -1,3 +1,4 @@
+import { UserRole } from "@mvp/shared";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -38,6 +39,7 @@ export class UsersTypeormRepository {
         const entity: UserOrmEntity = this.repository.create({
             email: input.email,
             displayName: input.displayName,
+            role: UserRole.USER,
         });
         const saved: UserOrmEntity = await this.repository.save(entity);
         return UsersTypeormRepository.mapRowToUser(saved);
@@ -64,6 +66,7 @@ export class UsersTypeormRepository {
         const fields = UserMapper.toPersistence(user);
         row.email = fields.email;
         row.displayName = fields.displayName;
+        row.role = fields.role;
 
         const saved: UserOrmEntity = await this.repository.save(row);
         return UsersTypeormRepository.mapRowToUser(saved);
@@ -85,6 +88,7 @@ export class UsersTypeormRepository {
             id: row.id,
             email: row.email,
             displayName: row.displayName,
+            role: row.role,
             createdAt: row.createdAt,
         });
     }

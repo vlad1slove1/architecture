@@ -1,4 +1,4 @@
-export { API_PREFIX, API_ROUTES, isApiResponseSuccess } from "./contracts/index.js";
+export { API_PREFIX, API_ROUTES, isApiResponseSuccess, UserRole } from "./contracts/index.js";
 export type {
     ApiErrorBody,
     ApiFailureBody,
