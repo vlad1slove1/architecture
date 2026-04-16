@@ -1,3 +1,4 @@
+import { UserRole } from "@mvp/shared";
 import { ApiProperty } from "@nestjs/swagger";
 import { NoteOpenApiModel } from "../notes/note.openapi-model.js";
 
@@ -11,6 +12,9 @@ export class UserOpenApiModel {
 
     @ApiProperty({ example: "Анна" })
     public displayName!: string;
+
+    @ApiProperty({ enum: UserRole, example: UserRole.USER })
+    public role!: UserRole;
 
     @ApiProperty({ example: "2026-03-30T12:00:00.000Z" })
     public createdAt!: string;
