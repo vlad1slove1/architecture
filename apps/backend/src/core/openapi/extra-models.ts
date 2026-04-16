@@ -1,3 +1,4 @@
+import { OrderModel } from "../../modules/orders/domain/models/order.model.js";
 import {
     ApiFailureOpenApiModel,
     ApiSuccessNoteOpenApiModel,
@@ -21,4 +22,5 @@ export const OPENAPI_EXTRA_MODELS = [
     ApiSuccessUsersListOpenApiModel,
     ApiSuccessUserOpenApiModel,
     ValidationErrorOpenApiModel,
+    OrderModel,
 ] as const;

@@ -4,6 +4,7 @@ import { EnvConfigModule } from "../core/config/env-config.module.js";
 import { EnvConfigService } from "../core/config/env-config.service.js";
 import { HealthModule } from "./health/health.module.js";
 import { NotesModule } from "./notes/notes.module.js";
+import { OrdersModule } from "./orders/orders.module.js";
 import { UsersModule } from "./users/users.module.js";
 
 @Module({
@@ -22,6 +23,7 @@ import { UsersModule } from "./users/users.module.js";
         HealthModule,
         UsersModule,
         NotesModule,
+        OrdersModule,
     ],
 })
 export class AppModule {}
