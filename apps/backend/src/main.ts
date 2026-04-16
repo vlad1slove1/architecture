@@ -13,6 +13,7 @@ const SWAGGER_PATH = "swagger";
 
 async function bootstrap(): Promise<void> {
     const app = await NestFactory.create(AppModule);
+    app.enableShutdownHooks();
     app.setGlobalPrefix("api");
     app.enableCors({ origin: true });
     app.useGlobalPipes(
