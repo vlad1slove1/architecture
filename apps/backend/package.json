@@ -4,6 +4,7 @@
     "scripts": {
         "build": "nest build",
         "dev": "nest start --watch",
+        "start:debug": "nest start --watch --debug",
         "start": "node dist/src/main.js",
         "start:prod": "node dist/src/main.js",
         "migration:generate": "node scripts/run-migration-generate.mjs",
