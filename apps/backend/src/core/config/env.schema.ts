@@ -9,6 +9,10 @@ export const envSchema = z.object({
     DB_PASSWORD: z.string().min(1),
     DB_NAME: z.string().min(1),
     DATABASE_URL: z.string().min(1).optional(),
+    AUTH_JWT_SECRET: z.string().min(1),
+    AUTH_JWT_EXPIRES_IN: z.string().min(1).default("15m"),
+    AUTH_REFRESH_SECRET: z.string().min(1),
+    AUTH_REFRESH_EXPIRES_IN: z.string().min(1).default("30d"),
 });
 
 export type EnvSchemaOutput = z.infer<typeof envSchema>;
