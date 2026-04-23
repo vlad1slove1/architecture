@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { EnvConfigModule } from "../core/config/env-config.module.js";
 import { EnvConfigService } from "../core/config/env-config.service.js";
+import { AuthModule } from "./auth/auth.module.js";
 import { HealthModule } from "./health/health.module.js";
 import { NotesModule } from "./notes/notes.module.js";
 import { OrdersModule } from "./orders/orders.module.js";
@@ -20,6 +21,7 @@ import { UsersModule } from "./users/users.module.js";
                 synchronize: false,
             }),
         }),
+        AuthModule,
         HealthModule,
         UsersModule,
         NotesModule,

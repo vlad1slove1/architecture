@@ -1,4 +1,4 @@
-import { isApiResponseSuccess, type ApiResponse, type UserDto } from "@mvp/shared";
+import { isApiResponseSuccess, UserRole, type ApiResponse, type UserDto } from "@mvp/shared";
 import {
     Body,
     Controller,
@@ -9,8 +9,10 @@ import {
     ParseUUIDPipe,
     Patch,
     Post,
+    UseGuards,
 } from "@nestjs/common";
 import {
+    ApiBearerAuth,
     ApiBody,
     ApiCreatedResponse,
     ApiOkResponse,
@@ -25,6 +27,8 @@ import {
     ApiSuccessUsersListOpenApiModel,
     buildEnvelopeOneOfSchema,
 } from "../../core/openapi/index.js";
+import { Roles } from "../auth/domain/decorators/roles.decorator.js";
+import { JwtAuthGuard } from "../auth/domain/guards/jwt-auth.guard.js";
 import { UserMapper } from "./domain/user.mapper.js";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
@@ -33,6 +37,9 @@ import { UsersService } from "./users.service.js";
 
 @ApiTags("Users")
 @Controller("users")
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Roles(UserRole.ADMIN)
 export class UsersController {
     public constructor(private readonly usersService: UsersService) {}
 

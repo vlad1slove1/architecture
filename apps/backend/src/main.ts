@@ -39,6 +39,8 @@ async function bootstrap(): Promise<void> {
         )
         .setVersion("1.0.0")
         .addServer("http://localhost:3000", "Локально (порт по умолчанию)")
+        .addBearerAuth()
+        .addTag("Auth", "Аутентификация")
         .addTag("Health", "Проверка доступности сервиса")
         .addTag("Users", "Пользователи")
         .addTag("Notes", "Заметки")
