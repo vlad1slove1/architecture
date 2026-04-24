@@ -1,9 +1,11 @@
 import type { ApiResponse, CreateUserRequestBody, UpdateUserRequestBody } from "@mvp/shared";
+import { PagedApiResponse, PaginationMeta } from "@mvp/shared/src/contracts/pagination.contract.js";
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { NotesService } from "../notes/notes.service.js";
 import type { User } from "./domain/user.js";
 import { UserMapper } from "./domain/user.mapper.js";
 import { UsersTypeormRepository } from "./infrastructure/persistence/users.typeorm-repository.js";
+import { ListUsersParams } from "./types/list-users-params.js";
 import type { UserWithNotes } from "./types/user-with-notes.js";
 
 @Injectable()
@@ -13,12 +15,19 @@ export class UsersService {
         private readonly notesService: NotesService,
     ) {}
 
-    public async listUsers(): Promise<ApiResponse<readonly UserWithNotes[]>> {
-        const users: readonly User[] = await this.usersRepository.findAll();
-        const data: UserWithNotes[] = await Promise.all(
-            users.map(async (user: User): Promise<UserWithNotes> => this.loadUserWithNotes(user)),
-        );
-        return { success: true, data };
+    public async listUsers(params: ListUsersParams): Promise<ApiResponse<PagedApiResponse<User>>> {
+        const { items, total, totalPages } = await this.usersRepository.findAll(params);
+
+        const meta: PaginationMeta = {
+            page: params.page,
+            limit: params.limit,
+            total,
+            totalPages,
+            sortProperty: params.sortProperty,
+            sortDirection: params.sortDirection,
+        };
+
+        return { success: true, data: { items, meta } };
     }
 
     public async createUser(input: CreateUserRequestBody): Promise<ApiResponse<UserWithNotes>> {

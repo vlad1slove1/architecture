@@ -1,4 +1,4 @@
-import type { UserDto, UserRole } from "@mvp/shared";
+import { UserDto, UserRole } from "@mvp/shared";
 import type { Note } from "../../notes/domain/note.js";
 import { NoteMapper, type NotePersistenceFields } from "../../notes/domain/note.mapper.js";
 import type { UserWithNotes } from "../types/user-with-notes.js";
@@ -50,7 +50,7 @@ export class UserMapper {
         };
     }
 
-    public static toDto(user: User, notes: readonly Note[] = []): UserDto {
+    public static toDtoWithNotes(user: User, notes: readonly Note[] = []): UserDto {
         return {
             id: user.id,
             email: user.email,
@@ -58,6 +58,17 @@ export class UserMapper {
             role: user.role,
             createdAt: user.createdAt.toISOString(),
             notes: notes.map((n: Note) => NoteMapper.toDto(n)),
+        };
+    }
+
+    public static toDto(user: User): UserDto {
+        return {
+            id: user.id,
+            email: user.email,
+            displayName: user.displayName,
+            role: user.role,
+            createdAt: user.createdAt.toISOString(),
+            notes: [],
         };
     }
 }

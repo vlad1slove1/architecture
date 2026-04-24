@@ -1,4 +1,4 @@
-export { API_PREFIX, API_ROUTES, isApiResponseSuccess, UserRole } from "./contracts/index.js";
+export { API_PREFIX, API_ROUTES, UserRole, isApiResponseSuccess } from "./contracts/index.js";
 export type {
     ApiErrorBody,
     ApiFailureBody,
@@ -9,5 +9,5 @@ export type {
     HealthCheckResponse,
     NoteDto,
     UpdateUserRequestBody,
-    UserDto,
+    UserDtoWithNotes as UserDto,
 } from "./contracts/index.js";
