@@ -1,4 +1,5 @@
 import { isApiResponseSuccess, UserRole, type ApiResponse, type UserDto } from "@mvp/shared";
+import { PagedApiResponse } from "@mvp/shared/src/contracts/pagination.contract.js";
 import {
     Body,
     Controller,
@@ -9,6 +10,7 @@ import {
     ParseUUIDPipe,
     Patch,
     Post,
+    Query,
     UseGuards,
 } from "@nestjs/common";
 import {
@@ -24,14 +26,16 @@ import {
     ApiEnvelopeErrorResponses,
     ApiFailureOpenApiModel,
     ApiSuccessUserOpenApiModel,
-    ApiSuccessUsersListOpenApiModel,
     buildEnvelopeOneOfSchema,
 } from "../../core/openapi/index.js";
 import { Roles } from "../auth/domain/decorators/roles.decorator.js";
 import { JwtAuthGuard } from "../auth/domain/guards/jwt-auth.guard.js";
 import { UserMapper } from "./domain/user.mapper.js";
 import { CreateUserDto } from "./dto/create-user.dto";
+import { ListUsersQueryDto } from "./dto/list-users-query.dto.js";
+import { PagedUsersListEnvelopeDto } from "./dto/paged-users-list-data-response.dto.js";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { ListUsersParams } from "./types/list-users-params.js";
 import type { UserWithNotes } from "./types/user-with-notes.js";
 import { UsersService } from "./users.service.js";
 
@@ -46,24 +50,35 @@ export class UsersController {
     @Get()
     @ApiOperation({
         summary: "Список пользователей",
-        description: "Возвращает `ApiResponse<UserDto[]>` в общем конверте API.",
+        description: "Возвращает пагинированный список пользователей",
     })
     @ApiOkResponse({
         description: "Успех или бизнес-ошибка в теле ответа",
-        schema: buildEnvelopeOneOfSchema(ApiSuccessUsersListOpenApiModel, ApiFailureOpenApiModel),
+        schema: buildEnvelopeOneOfSchema(PagedUsersListEnvelopeDto, ApiFailureOpenApiModel),
     })
     @ApiEnvelopeErrorResponses()
-    public async listUsers(): Promise<ApiResponse<readonly UserDto[]>> {
-        const result: ApiResponse<readonly UserWithNotes[]> = await this.usersService.listUsers();
+    public async listUsers(
+        @Query() query: ListUsersQueryDto,
+    ): Promise<ApiResponse<PagedApiResponse<UserDto>>> {
+        const params: ListUsersParams = {
+            page: query.page ?? 1,
+            limit: query.limit ?? 25,
+            sortProperty: query.sortProperty ?? "createdAt",
+            sortDirection: query.sortDirection ?? "ASC",
+        };
+
+        const result = await this.usersService.listUsers(params);
+
         if (!isApiResponseSuccess(result)) {
             return result;
         }
 
         return {
             success: true,
-            data: result.data.map(
-                (row: UserWithNotes): UserDto => UserMapper.toDto(row.user, row.notes),
-            ),
+            data: {
+                items: result.data.items.map(UserMapper.toDto),
+                meta: result.data.meta,
+            },
         };
     }
 
@@ -90,7 +105,7 @@ export class UsersController {
 
         return {
             success: true,
-            data: UserMapper.toDto(result.data.user, result.data.notes),
+            data: UserMapper.toDtoWithNotes(result.data.user, result.data.notes),
         };
     }
 
@@ -115,7 +130,7 @@ export class UsersController {
 
         return {
             success: true,
-            data: UserMapper.toDto(result.data.user, result.data.notes),
+            data: UserMapper.toDtoWithNotes(result.data.user, result.data.notes),
         };
     }
 
@@ -146,7 +161,7 @@ export class UsersController {
 
         return {
             success: true,
-            data: UserMapper.toDto(result.data.user, result.data.notes),
+            data: UserMapper.toDtoWithNotes(result.data.user, result.data.notes),
         };
     }
 
@@ -171,7 +186,7 @@ export class UsersController {
 
         return {
             success: true,
-            data: UserMapper.toDto(result.data.user, result.data.notes),
+            data: UserMapper.toDtoWithNotes(result.data.user, result.data.notes),
         };
     }
 }

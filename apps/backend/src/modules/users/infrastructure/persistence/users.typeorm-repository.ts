@@ -1,9 +1,11 @@
 import { UserRole } from "@mvp/shared";
+import { OffsetPageResponse } from "@mvp/shared/src/contracts/pagination.contract.js";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Repository, SelectQueryBuilder } from "typeorm";
 import { User } from "../../domain/user.js";
 import { UserMapper } from "../../domain/user.mapper.js";
+import { ListUsersParams } from "../../types/list-users-params.js";
 import { UserOrmEntity } from "./user.orm-entity.js";
 
 @Injectable()
@@ -13,9 +15,13 @@ export class UsersTypeormRepository {
         private readonly repository: Repository<UserOrmEntity>,
     ) {}
 
-    public async findAll(): Promise<readonly User[]> {
-        const rows: UserOrmEntity[] = await this.repository.find({ order: { createdAt: "ASC" } });
-        return rows.map((row: UserOrmEntity): User => UsersTypeormRepository.mapRowToUser(row));
+    public async findAll(params: ListUsersParams): Promise<OffsetPageResponse<User>> {
+        const [entities, total] = await this.qb(params).getManyAndCount();
+
+        const items: User[] = entities.map(UsersTypeormRepository.mapRowToUser);
+        const totalPages: number = params.limit > 0 ? Math.ceil(total / params.limit) : 0;
+
+        return { items, total, totalPages };
     }
 
     public async findById(id: string): Promise<User | null> {
@@ -91,5 +97,24 @@ export class UsersTypeormRepository {
             role: row.role,
             createdAt: row.createdAt,
         });
+    }
+
+    private qb(params: ListUsersParams): SelectQueryBuilder<UserOrmEntity> {
+        const columnSort: Record<ListUsersParams["sortProperty"], string> = {
+            createdAt: "user.createdAt",
+            email: "user.email",
+            displayName: "user.displayName",
+        };
+
+        const skip: number = (params.page - 1) * params.limit;
+        const qb = this.repository.createQueryBuilder("user");
+
+        qb.orderBy(columnSort[params.sortProperty], params.sortDirection).addOrderBy(
+            "user.id",
+            params.sortDirection,
+        );
+
+        qb.skip(skip).take(params.limit);
+        return qb;
     }
 }

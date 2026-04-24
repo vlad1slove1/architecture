@@ -7,6 +7,9 @@ export interface UserDto {
     readonly displayName: string;
     readonly role: UserRole;
     readonly createdAt: string;
+}
+
+export interface UserDtoWithNotes extends UserDto {
     readonly notes: readonly NoteDto[];
 }
 
